@@ -17,6 +17,7 @@ export default class Game extends React.Component {
             }],
             stepNumber: 0,
             xIsNext: true,
+            selectedStep: null,
         }
     }
 
@@ -39,6 +40,7 @@ export default class Game extends React.Component {
             }]),
             stepNumber: history.length,
             xIsNext: !this.state.xIsNext,
+            selectedStep: null,
         });
     }
 
@@ -46,6 +48,7 @@ export default class Game extends React.Component {
         this.setState({
             stepNumber: step,
             xIsNext: (step % 2) === 0,
+            selectedStep: step,
         })
     }
 
@@ -62,6 +65,10 @@ export default class Game extends React.Component {
         }
 
         const moves = history.map((step, move) => {
+            let shouldBeHighlighted = false;
+            if (this.state.selectedStep !== null && this.state.selectedStep === move) {
+                shouldBeHighlighted = true;
+            }
             let desc;
             if (move > 0) {
                 const symbol = step.lastTurn.isX ? 'X' : 'O';
@@ -71,7 +78,10 @@ export default class Game extends React.Component {
             }
             return (
                 <li key={move}>
-                    <button onClick={() => this.jumpTo(move)}>{desc}</button>
+                    <button
+                        className={shouldBeHighlighted ? 'highlighted' : ''}  
+                        onClick={() => this.jumpTo(move)}
+                    >{desc}</button>
                 </li>
             );
         });
