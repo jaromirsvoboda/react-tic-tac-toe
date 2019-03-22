@@ -1,11 +1,13 @@
 import React from 'react';
-import Board from './Board'
+import Board from './Board';
+import Toggle from './Toggle';
 
 const DIMENSION = 3;
 
 export default class Game extends React.Component {
     constructor(props) {
         super(props);
+        this._descendingMoves = true;
         this.state = {
             history: [{
                 squares: Array(9).fill(null),
@@ -18,6 +20,7 @@ export default class Game extends React.Component {
             stepNumber: 0,
             xIsNext: true,
             selectedStep: null,
+            movesSortedDesc: true,
         }
     }
 
@@ -52,6 +55,12 @@ export default class Game extends React.Component {
         })
     }
 
+    onToggleValueChanged(value) {
+        this.setState({
+            movesSortedDesc: value
+        });
+    }
+
     render() {
         const history = this.state.history;
         const current = history[this.state.stepNumber];
@@ -79,12 +88,15 @@ export default class Game extends React.Component {
             return (
                 <li key={move}>
                     <button
-                        className={shouldBeHighlighted ? 'highlighted' : ''}  
+                        className={shouldBeHighlighted ? 'highlighted' : ''}
                         onClick={() => this.jumpTo(move)}
                     >{desc}</button>
                 </li>
             );
         });
+        if (!this.state.movesSortedDesc) {
+            moves.reverse();
+        }
 
         return (
             <div className="game">
@@ -96,6 +108,11 @@ export default class Game extends React.Component {
                 </div>
                 <div className="game-info">
                     <div>{status}</div>
+                    <div>
+                        <Toggle
+                            onValueChanged={(value) => this.onToggleValueChanged(value)}
+                        />
+                    </div>
                     <ol>{moves}</ol>
                 </div>
             </div>
