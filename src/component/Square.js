@@ -1,12 +1,13 @@
 import React from 'react';
 
 export default (props) => {
-    return (
+    const button =
         <button
-            className="square"
+            className={`square ${props.highlighted ? 'highlighted-square' : ''}`}
             onClick={props.onClick}
         >
             {props.value}
-        </button>
-    );
+        </button>;
+
+    return button;
 }

@@ -28,7 +28,7 @@ export default class Game extends React.Component {
         const history = this.state.history.slice(0, this.state.stepNumber + 1);
         const current = history[history.length - 1];
         const squares = current.squares.slice();
-        if (calculateWinner(squares) || squares[i]) {
+        if (calculateWinner(squares).symbol || squares[i]) {
             return;
         }
         squares[i] = this.state.xIsNext ? 'X' : 'O';
@@ -65,10 +65,12 @@ export default class Game extends React.Component {
         const history = this.state.history;
         const current = history[this.state.stepNumber];
         const winner = calculateWinner(current.squares);
+        const winningSymbol = winner.symbol;
+        const winningLine = winner.line;
 
         let status;
-        if (winner) {
-            status = 'Winner: ' + winner;
+        if (winningSymbol) {
+            status = 'Winner: ' + winningSymbol;
         } else {
             status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
         }
@@ -88,7 +90,7 @@ export default class Game extends React.Component {
             return (
                 <li key={move}>
                     <button
-                        className={shouldBeHighlighted ? 'highlighted' : ''}
+                        className={shouldBeHighlighted ? 'highlighted-text' : ''}
                         onClick={() => this.jumpTo(move)}
                     >{desc}</button>
                 </li>
@@ -103,6 +105,7 @@ export default class Game extends React.Component {
                 <div className="game-board">
                     <Board
                         squares={current.squares}
+                        winningLine={winningLine}
                         onClick={(i) => this.handleClick(i)}
                     />
                 </div>
@@ -134,8 +137,14 @@ function calculateWinner(squares) {
     for (let i = 0; i < lines.length; i++) {
         const [a, b, c] = lines[i];
         if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-            return squares[a];
+            return {
+                symbol: squares[a],
+                line: lines[i],
+            };
         }
     }
-    return null;
+    return {
+        symbol: null,
+        line: [],
+    };
 }
