@@ -68,13 +68,6 @@ export default class Game extends React.Component {
         const winningSymbol = winner.symbol;
         const winningLine = winner.line;
 
-        let status;
-        if (winningSymbol) {
-            status = 'Winner: ' + winningSymbol;
-        } else {
-            status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
-        }
-
         const moves = history.map((step, move) => {
             let shouldBeHighlighted = false;
             if (this.state.selectedStep !== null && this.state.selectedStep === move) {
@@ -99,6 +92,17 @@ export default class Game extends React.Component {
         if (!this.state.movesSortedDesc) {
             moves.reverse();
         }
+
+        let status;
+        if (winningSymbol) {
+            status = 'Winner: ' + winningSymbol;
+        } else if (moves.length > 9) {
+            status = 'Draw';
+        } else {
+            status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+        }
+
+
 
         return (
             <div className="game">
